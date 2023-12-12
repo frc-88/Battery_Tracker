@@ -23,12 +23,16 @@ def process_image(image):
                 if filename.startswith(data) and filename.endswith(".csv"):
                      registered = True
                      break
+                elif filename.startswith(data) == True and filename.endswith(".csv") == False:
+                    registered = False
+                    print("csv conditional")
+                    break
             if(registered == False):
                 color = (0, 0, 255)
-                print("unregistered battery detected")
+                print("unregistered battery detected. Error: No csv file found")
             elif(registered == True):
                 color = (0, 255, 0)
-                print("registered battery detected")
+                print("registered battery detected. csv file found")
             bbox = bbox.astype(int)
             debug_image = cv2.polylines(image, [bbox], True, color, 2)
             debug_image = cv2.putText(
@@ -49,7 +53,7 @@ def process_image(image):
 #         print("Could not access the camera")
 #         break
 
-image = cv2.imread('./images/tj2-battery2.jpg')
+image = cv2.imread('./images/tj2-battery3.jpg')
 debug_image = process_image(image)
 
 #next we need to load the csv file
