@@ -1,13 +1,13 @@
 from datetime import timedelta
 from io import TextIOWrapper
 from typing import Generator, Optional
-from dslogs.log_entry.metadata import Metadata
-from dslogs.log_entry.log_entry import LogEntry
-from dslogs.log_entry.pdp_data import PdpData
-from dslogs.log_entry.pdp_meta_data import PdpMetaData
-from dslogs.log_entry.pdp_rev_pdh_data import PdpRevPdhData
-from dslogs.log_entry.pdp_type import PdpType
-from dslogs.log_entry.pdp_ctre_data import PdpCtreData
+from dslogs.entry.metadata import Metadata
+from dslogs.entry.log_entry import LogEntry
+from dslogs.entry.pdp_data import PdpData
+from dslogs.entry.pdp_meta_data import PdpMetaData
+from dslogs.entry.pdp_rev_pdh_data import PdpRevPdhData
+from dslogs.entry.pdp_type import PdpType
+from dslogs.entry.pdp_ctre_data import PdpCtreData
 
 
 class DsLogStream:
@@ -33,7 +33,7 @@ class DsLogStream:
                 entry = LogEntry.from_bytes(data)
             else:
                 break
-            entry.time = time
+            entry.date = time
             if data := self.conditional_read(PdpMetaData.length()):
                 entry.pdp_meta_data = PdpMetaData.from_bytes(data)
             else:

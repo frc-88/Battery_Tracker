@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dslogs.log_entry.generic_entry import GenericEntry
+from dslogs.entry.generic_entry import GenericEntry
 import struct
 
 
@@ -9,7 +9,7 @@ class PdpCtreData(GenericEntry):
     def __init__(self, pdp_id: int, currents: list[float], main_voltage: float, temperature: float) -> None:
         self.pdp_id = pdp_id
         self.currents = currents
-        self.main_voltage = main_voltage
+        self.voltage = main_voltage
         self.resistance = 0.0
         self.temperature = temperature
 

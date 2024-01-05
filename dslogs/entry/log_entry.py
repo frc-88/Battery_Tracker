@@ -1,12 +1,12 @@
 from __future__ import annotations
 import struct
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional
-from dslogs.log_entry.generic_entry import GenericEntry
-from dslogs.log_entry.pdp_data import PdpData
-from dslogs.log_entry.pdp_meta_data import PdpMetaData
-from dslogs.log_entry.pdp_type import PdpType
-from dslogs.log_entry.status_entry import StatusEntry
+from dslogs.entry.generic_entry import GenericEntry
+from dslogs.entry.pdp_data import PdpData
+from dslogs.entry.pdp_meta_data import PdpMetaData
+from dslogs.entry.pdp_type import PdpType
+from dslogs.entry.status_entry import StatusEntry
 
 
 class LogEntry(GenericEntry):
@@ -23,7 +23,7 @@ class LogEntry(GenericEntry):
         wifi: float,
         bandwidth: float,
         pdp_id: int,
-        time: datetime = datetime(1904, 1, 1, 0, 0, 0),
+        date: datetime = datetime(1904, 1, 1, 0, 0, 0),
         pdp_meta_data: PdpMetaData = PdpMetaData(PdpType.NONE),
         pdp_data: Optional[PdpData] = None
     ) -> None:
@@ -36,7 +36,7 @@ class LogEntry(GenericEntry):
         self.wifi = wifi
         self.bandwidth = bandwidth
         self.pdp_id = pdp_id
-        self.time = time
+        self.date = date
         self.pdp_meta_data = pdp_meta_data
         self.pdp_data = pdp_data
 
@@ -109,7 +109,7 @@ class LogEntry(GenericEntry):
             f"wifi={self.wifi}, "
             f"bandwidth={self.bandwidth}, "
             f"pdp_id={self.pdp_id}, "
-            f"time={self.time}, "
+            f"time={self.date}, "
             f"pdp_meta_data={self.pdp_meta_data}, "
             f"pdp_data={self.pdp_data})"
         )

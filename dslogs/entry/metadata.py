@@ -1,10 +1,8 @@
 from __future__ import annotations
 import struct
-from datetime import datetime, timedelta
-from pytz import timezone
-from dslogs.log_entry.generic_entry import GenericEntry
-
-UINT64_MAX = (1 << 64) - 1
+from datetime import datetime
+from dslogs.entry.generic_entry import GenericEntry
+from dslogs.entry.parse_date import parse_date
 
 
 class Metadata(GenericEntry):
@@ -26,7 +24,4 @@ class Metadata(GenericEntry):
 
     @property
     def date(self) -> datetime:
-        epoch = datetime(1904, 1, 1, 0, 0, 0, 0, timezone("UTC"))
-        date = epoch + timedelta(seconds=self.unix_time)
-        date += timedelta(seconds=self.offset / UINT64_MAX)
-        return date
+        return parse_date(self.unix_time, self.offset)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 import struct
-from dslogs.log_entry.generic_entry import GenericEntry
-from dslogs.log_entry.pdp_type import PdpType
+from dslogs.entry.generic_entry import GenericEntry
+from dslogs.entry.pdp_type import PdpType
 
 
 class PdpMetaData(GenericEntry):
