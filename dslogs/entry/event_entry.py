@@ -46,7 +46,6 @@ class EventEntry(GenericEntry):
                     raise ValueError(f"Unsupported version {value}")
             message[key] = value
         self.message = message
-        print(self.message)
 
     @classmethod
     def length(cls) -> int:
