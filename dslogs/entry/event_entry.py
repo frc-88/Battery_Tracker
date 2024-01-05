@@ -1,7 +1,10 @@
 from __future__ import annotations
+
 import re
-from datetime import datetime
 import struct
+from datetime import datetime
+from typing import Optional
+
 from dslogs.entry.generic_entry import GenericEntry
 from dslogs.entry.parse_date import parse_date
 
@@ -9,27 +12,35 @@ from dslogs.entry.parse_date import parse_date
 class EventEntry(GenericEntry):
     byte_code = ">qQi"
     message_pattern = r"<\w*>"
-    
-    def __init__(self, unix_time: int, offset: int, message_length: int, message: str = "") -> None:
+
+    def __init__(
+        self,
+        unix_time: int,
+        offset: int,
+        message_length: int,
+        message: Optional[dict] = None,
+    ) -> None:
         self.unix_time = unix_time
         self.offset = offset
         self.message_length = message_length
-        self.message = message
+        self.message = message if message else {}
         super().__init__()
 
     @classmethod
     def from_bytes(cls, data: bytes) -> EventEntry:
         unix_time, offset, length = struct.unpack(cls.byte_code, data)
         return cls(unix_time, offset, length)
-    
+
     def parse_message(self, data: bytes) -> None:
-        text = struct.unpack(f">{self.message_length}s", data)[0].decode("ascii", "backslashreplace")
+        text = struct.unpack(f">{self.message_length}s", data)[0].decode(
+            "ascii", "backslashreplace"
+        )
         self.message = text
         matches: list[re.Match] = list(re.finditer(self.message_pattern, text))
         message = {}
         for index in range(len(matches)):
             match = matches[index]
-            key = text[match.start() + 1: match.end() - 1]
+            key = text[match.start() + 1 : match.end() - 1]
             if index == len(matches) - 1:
                 value_stop = len(text) - 1
             else:
@@ -39,7 +50,7 @@ class EventEntry(GenericEntry):
             is_version = key == "TagVersion"
             if is_version:
                 value_start -= 1
-            value = text[value_start: value_stop]
+            value = text[value_start:value_stop]
             if is_version:
                 value = int(value)
                 if value != 1:

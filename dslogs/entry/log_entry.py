@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 import struct
 from datetime import datetime
 from typing import Optional
+
 from dslogs.entry.generic_entry import GenericEntry
 from dslogs.entry.pdp_data import PdpData
 from dslogs.entry.pdp_meta_data import PdpMetaData
@@ -25,7 +27,7 @@ class LogEntry(GenericEntry):
         pdp_id: int,
         date: datetime = datetime(1904, 1, 1, 0, 0, 0),
         pdp_meta_data: PdpMetaData = PdpMetaData(PdpType.NONE),
-        pdp_data: Optional[PdpData] = None
+        pdp_data: PdpData = PdpData(),
     ) -> None:
         self.trip_time = trip_time
         self.packet_loss = packet_loss
@@ -113,5 +115,5 @@ class LogEntry(GenericEntry):
             f"pdp_meta_data={self.pdp_meta_data}, "
             f"pdp_data={self.pdp_data})"
         )
-        
+
     __repr__ = __str__

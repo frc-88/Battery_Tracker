@@ -1,22 +1,23 @@
 from datetime import timedelta
-from io import TextIOWrapper
-from typing import Generator, Optional
-from dslogs.entry.metadata import Metadata
+from io import BufferedReader
+from typing import Generator, Optional, Type, cast
+
 from dslogs.entry.log_entry import LogEntry
+from dslogs.entry.metadata import Metadata
+from dslogs.entry.pdp_ctre_data import PdpCtreData
 from dslogs.entry.pdp_data import PdpData
 from dslogs.entry.pdp_meta_data import PdpMetaData
 from dslogs.entry.pdp_rev_pdh_data import PdpRevPdhData
 from dslogs.entry.pdp_type import PdpType
-from dslogs.entry.pdp_ctre_data import PdpCtreData
 
 
 class DsLogStream:
-    def __init__(self, file: TextIOWrapper) -> None:
+    def __init__(self, file: BufferedReader) -> None:
         self.file = file
         self.metadata = Metadata.from_bytes(self.file.read(Metadata.length()))
         if self.metadata.version != 4:
             raise ValueError(f"Unsupported log version {self.metadata.version}")
-        self.pdp_map: dict[PdpType, Optional[PdpData]] = {
+        self.pdp_map: dict[PdpType, Optional[Type[PdpData]]] = {
             PdpType.NONE: None,
             PdpType.CTRE: PdpCtreData,
             PdpType.REV: PdpRevPdhData,
@@ -41,7 +42,7 @@ class DsLogStream:
             pdp_class = self.pdp_map[entry.pdp_meta_data.type]
             if pdp_class is not None:
                 if data := self.conditional_read(pdp_class.length()):
-                    pdp_data = pdp_class.from_bytes(data)
+                    pdp_data = cast(PdpData, pdp_class.from_bytes(data))
                 else:
                     break
                 entry.pdp_data = pdp_data

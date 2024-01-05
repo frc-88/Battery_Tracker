@@ -1,11 +1,12 @@
-from io import TextIOWrapper
+from io import BufferedReader
 from typing import Generator, Optional
-from dslogs.entry.metadata import Metadata
+
 from dslogs.entry.event_entry import EventEntry
+from dslogs.entry.metadata import Metadata
 
 
 class DsEventStream:
-    def __init__(self, file: TextIOWrapper) -> None:
+    def __init__(self, file: BufferedReader) -> None:
         self.file = file
         self.metadata = Metadata.from_bytes(self.file.read(Metadata.length()))
         if self.metadata.version != 4:

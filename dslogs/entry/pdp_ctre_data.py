@@ -1,16 +1,25 @@
 from __future__ import annotations
-from dslogs.entry.generic_entry import GenericEntry
+
 import struct
 
+from dslogs.entry.pdp_data import PdpData
 
-class PdpCtreData(GenericEntry):
+
+class PdpCtreData(PdpData):
     byte_code = ">BQQ" + ("B" * 8)
 
-    def __init__(self, pdp_id: int, currents: list[float], main_voltage: float, temperature: float) -> None:
+    def __init__(
+        self,
+        pdp_id: int,
+        currents: list[float],
+        resistance: float,
+        main_voltage: float,
+        temperature: float,
+    ) -> None:
         self.pdp_id = pdp_id
         self.currents = currents
         self.voltage = main_voltage
-        self.resistance = 0.0
+        self.resistance = resistance
         self.temperature = temperature
 
     @classmethod
@@ -20,8 +29,12 @@ class PdpCtreData(GenericEntry):
         longs = (
             parsed[1],
             parsed[2],
-            int.from_bytes(b"".join([i.to_bytes(1, "big") for i in parsed[3:8]]) + b"\x00\x00\x00", byteorder="big"),
+            int.from_bytes(
+                b"".join([i.to_bytes(1, "big") for i in parsed[3:8]]) + b"\x00\x00\x00",
+                byteorder="big",
+            ),
         )
+        resistance = parsed[8]
         voltage = parsed[9] * 0.0736
         temperature = float(parsed[10])
         currents = [0.0 for _ in range(16)]
@@ -33,7 +46,7 @@ class PdpCtreData(GenericEntry):
             num = num >> 54
             currents[index] = num / 8
 
-        return cls(pdp_id, currents, voltage, temperature)
+        return cls(pdp_id, currents, resistance, voltage, temperature)
 
     @classmethod
     def length(cls) -> int:

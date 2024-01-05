@@ -1,12 +1,15 @@
 from __future__ import annotations
-from abc import ABC, abstractclassmethod
+
+from abc import ABC, abstractmethod
 
 
 class GenericEntry(ABC):
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def from_bytes(cls, data: bytes) -> GenericEntry:
         pass
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def length(cls) -> int:
         pass
