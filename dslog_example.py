@@ -1,5 +1,5 @@
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -11,10 +11,10 @@ from dslogs.dslogstream import DsLogStream
 @dataclass
 class MatchData:
     battery_code: str = ""
-    data: pd.DataFrame = pd.DataFrame()
+    data: pd.DataFrame = field(default_factory=pd.DataFrame)
 
 
-SEARCH_PATTERN = f"Battery code: (.*)"
+SEARCH_PATTERN = "Battery code: (.*)"
 
 
 def load_battery_code(filename: str) -> str:
@@ -42,7 +42,7 @@ def load_power_data(filename: str) -> pd.DataFrame:
             log_data["date"].append(entry.date)
             log_data["voltage"].append(entry.voltage)
             log_data["pdp_voltage"].append(entry.pdp_data.voltage)
-            log_data[f"pdp_current"].append(sum(entry.pdp_data.currents))
+            log_data["pdp_current"].append(sum(entry.pdp_data.currents))
     df = pd.DataFrame(log_data)
     df["timestamp"] = df["date"].astype(int)
     df["timestamp"] = df["timestamp"].div(1e9)
