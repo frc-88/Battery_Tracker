@@ -1,6 +1,7 @@
 import re
 from dataclasses import dataclass, field
 
+import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
@@ -44,7 +45,7 @@ def load_power_data(filename: str) -> pd.DataFrame:
             log_data["pdp_voltage"].append(entry.pdp_data.voltage)
             log_data["pdp_current"].append(sum(entry.pdp_data.currents))
     df = pd.DataFrame(log_data)
-    df["timestamp"] = df["date"].astype(int)
+    df["timestamp"] = df["date"].astype(np.int64)
     df["timestamp"] = df["timestamp"].div(1e9)
     df["timestamp"] = df["timestamp"].sub(df["timestamp"].iloc[0])
     return df
