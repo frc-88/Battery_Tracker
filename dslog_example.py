@@ -33,7 +33,7 @@ def load_battery_code(filename: str) -> str:
 def load_power_data(filename: str) -> pd.DataFrame:
     log_data = {
         "date": [],
-        "voltage": [],
+       
         "pdp_voltage": [],
         "pdp_current": [],
     }
@@ -41,7 +41,7 @@ def load_power_data(filename: str) -> pd.DataFrame:
     with open(filename + ".dslog", "rb") as file:
         for entry in DsLogStream(file):
             log_data["date"].append(entry.date)
-            log_data["voltage"].append(entry.voltage)
+            
             log_data["pdp_voltage"].append(entry.pdp_data.voltage)
             log_data["pdp_current"].append(sum(entry.pdp_data.currents))
     df = pd.DataFrame(log_data)
@@ -60,9 +60,7 @@ def main() -> None:
     plt.title(f"Battery {battery_log.battery_code} performance over time")
 
     voltage_plot = plt.subplot(1, 1, 1)
-    voltage_plot.plot(
-        battery_log.data["timestamp"], battery_log.data["voltage"], label="Voltage"
-    )
+
     current_plot = plt.subplot(1, 1, 1)
     voltage_plot.sharey(current_plot)
     current_plot.plot(
@@ -71,7 +69,10 @@ def main() -> None:
     plt.legend()
     plt.ylim(voltage_plot.get_ylim()[0], 24)
     plt.show()
+    battery_log.data.to_csv("tj-battery_1.csv", index=False)
+
 
 
 if __name__ == "__main__":
     main()
+
